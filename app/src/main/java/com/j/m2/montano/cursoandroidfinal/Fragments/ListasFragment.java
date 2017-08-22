@@ -1,4 +1,4 @@
-package com.j.m2.montano.cursoandroidfinal;
+package com.j.m2.montano.cursoandroidfinal.Fragments;
 
 import android.support.v4.app.Fragment;
 import android.content.Context;
@@ -8,9 +8,9 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
-import com.j.m2.montano.cursoandroidfinal.Adapters.Adapter;
+import com.j.m2.montano.cursoandroidfinal.Adapters.AdapterFragmentLista;
+import com.j.m2.montano.cursoandroidfinal.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,7 +22,7 @@ import butterknife.Unbinder;
 
 public class ListasFragment extends Fragment {
 
-   @BindView(R.id.tabs)
+    @BindView(R.id.tabs)
     TabLayout tabs;
     @BindView(R.id.viewpager)
     ViewPager viewPager;
@@ -34,7 +34,7 @@ public class ListasFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.fragment_listas, container, false);
+        View view = inflater.inflate(R.layout.fragment_listas, container, false);
         unbinder = ButterKnife.bind(this, view);
         //ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -42,17 +42,20 @@ public class ListasFragment extends Fragment {
         //TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         //setupViewPager2(viewpager);
-       // tabs.setupWithViewPager(viewpager);
+        // tabs.setupWithViewPager(viewpager);
         return view;
 
     }
-    @Override public void onDestroyView() {
+
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
 
     }
+
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getFragmentManager());
+        AdapterFragmentLista adapter = new AdapterFragmentLista(getFragmentManager());
         adapter.addFragment(new ListContentFragment(), "List");
         //adapter.addFragment(new TileContentFragment(), "Tile");
         adapter.addFragment(new CardContentFragment(), "Card");

@@ -9,52 +9,6 @@
         <item>Parque De La Familia</item>
         <item>Parque de Educación Vial</item>
     </string-array>
-    <string-array name="place_desc">
-        <item>El Cristo de la Concordia es una colosal estatua monumental de Jesucristo, que se encuentra sobre el cerro de San Pedro.
-        </item>
-        <item>El Jardín Botánico Martín Cárdenas es un jardín botánico en la ciudad de Cochabamba, es miembro de la
-            Asociación de Jardines Botánicos de Latinoamérica y del Caribe</item>
-        <item>La laguna La Angostura es una laguna artificial en Bolivia, ubicada en la
-            provincia de Esteban Arze en el departamento de Cochabamba</item>
-        <item>Dirección: Calle Santivañez entre Av. Ayacucho y Junín</item>
-        <item>Dirección: Hamiraya, Cochabamba, Bolivia</item>
-        <item>Dirección: Av Ramón Rivero, Cochabamba, Bolivia</item>
-    </string-array>
-    <string-array name="place_details">
-        <item>El Cristo de la Concordia es una colosal estatua monumental de Jesucristo, que se encuentra sobre el cerro de
-            San Pedro en la ciudad de Cochabamba, Bolivia, a una altura de 265 metros sobre la ciudad.
-Altura: 133 ft
-Inauguración: 20 de noviembre de 1994
-Teléfono: +591 4 4228530
-Horario:miércoles	9:00–7:00
-jueves	9:00–7:00
-viernes	9:00–7:00
-sábado	9:00–7:00
-domingo	9:00–24:00
-lunes	9:00–7:00
-martes	9:00–7:00
-Arquitectos: Wálter Terrazas Pardo, César Terrazas Pardo
-        </item>
-        <item>El Jardín Botánico Martín Cárdenas es un jardín botánico en la ciudad de Cochabamba,
-            es miembro de la Asociación de Jardines Botánicos de Latinoamérica y del Caribe, y presenta trabajos para la Agenda
-        </item>
-        <item>La laguna La Angostura es una laguna artificial en Bolivia, ubicada en la provincia de Esteban Arze en el departamento de Cochabamba.
-
-Su nombre oficial es «Represa México», y está ubicada a 17 km de la ciudad de Cochabamba, a una altura de 2700 m sobre el nivel del mar.
-            Tiene unas dimensiones máximas de 9,7 km de largo por 2 km de ancho y una superficie de 10,5 km².
-        </item>
-        <item>La Casona Santivañez declarada Patrimonio Histórico de Cochabamba, constituye una reliquia arquitectónica de estilo colonial, que data del siglo XIX.
-            La elegancia, historia y colorido, caracterizan esta infraestructura de gran valor turístico para Cochabamba.
-        </item>
-        <item>destacan las 5 fuentes de “Aguas Danzantes” con proyección de imágenes en el agua,
-            vídeos, luces LED multicolores y disparos del líquido a una altura de hasta 20 metros,
-            sincronizado con música. Cuenta además con zona de comidas, áreas de descanso y también podrá ser
-            utilizado como un espacio público libre,para desarrollar actividades al aire libre,  expresiones artísticas y culturales.
-        </item>
-        <item>Parque recreativo infantil posee áreas de juego recreacional, trenes,
-            carros chocadores y amplias áreas verdes. El parque tiene un circuito vial donde los niños aprenden sobre seguridad y señales viales.
-        </item>
-    </string-array>
     <string-array name="place_locations">
         <item>Dirección: Av de la Concordia, Cochabamba, Bolivia</item>
         <item>Dirección: Raul Rivero Torres, Cochabamba, Bolivia</item>
@@ -79,14 +33,6 @@ Su nombre oficial es «Represa México», y está ubicada a 17 km de la ciudad d
         <item>@drawable/casona</item>
         <item>@drawable/toro_toro</item>
         <item>@drawable/incallajta1</item>
-    </array>
-    <array name="places_picture">
-        <item>@drawable/a</item>
-        <item>@drawable/b</item>
-        <item>@drawable/c</item>
-        <item>@drawable/d</item>
-        <item>@drawable/e</item>
-        <item>@drawable/f</item>
     </array>
     <string-array name="punto_mapa">
         <item>-17.384318, -66.134980</item>

@@ -16,7 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.j.m2.montano.cursoandroidfinal.Adapters.Adapter;
+import com.j.m2.montano.cursoandroidfinal.Adapters.AdapterFragmentLista;
+import com.j.m2.montano.cursoandroidfinal.Fragments.CardContentFragment;
+import com.j.m2.montano.cursoandroidfinal.Fragments.ListContentFragment;
+import com.j.m2.montano.cursoandroidfinal.Fragments.ListasFragment;
+import com.j.m2.montano.cursoandroidfinal.Fragments.MapsFragment;
+import com.j.m2.montano.cursoandroidfinal.Fragments.bienvenidaFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,7 +71,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
+        AdapterFragmentLista adapter = new AdapterFragmentLista(getSupportFragmentManager());
         adapter.addFragment(new bienvenidaFragment(), "BIENVENIDO");
         //adapter.addFragment(new ListContentFragment(), "Lugares mas visitados");
         //adapter.addFragment(new MapsFragment(), "Tile");
@@ -75,7 +80,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupViewPager2(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
+        AdapterFragmentLista adapter = new AdapterFragmentLista(getSupportFragmentManager());
         //adapter.addFragment(new bienvenidaFragment(), "BIENVENIDO");
         adapter.addFragment(new ListContentFragment(), "Lugares mas visitados");
         //adapter.addFragment(new MapsFragment(), "Tile");

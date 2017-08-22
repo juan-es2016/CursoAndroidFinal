@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package com.j.m2.montano.cursoandroidfinal;
+package com.j.m2.montano.cursoandroidfinal.Activitys;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.annotation.StringDef;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.j.m2.montano.cursoandroidfinal.Fragments.MapsFragment;
 import com.j.m2.montano.cursoandroidfinal.Model.Lugar;
 import com.j.m2.montano.cursoandroidfinal.Model.ResponsModel;
+import com.j.m2.montano.cursoandroidfinal.R;
 import com.j.m2.montano.cursoandroidfinal.Retrofit.RetroServe;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

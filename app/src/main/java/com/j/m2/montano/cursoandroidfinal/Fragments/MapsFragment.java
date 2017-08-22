@@ -1,4 +1,4 @@
-package com.j.m2.montano.cursoandroidfinal;
+package com.j.m2.montano.cursoandroidfinal.Fragments;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.j.m2.montano.cursoandroidfinal.Model.Lugar;
 import com.j.m2.montano.cursoandroidfinal.Model.ResponsModel;
+import com.j.m2.montano.cursoandroidfinal.R;
 import com.j.m2.montano.cursoandroidfinal.Retrofit.RetroServe;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import retrofit2.Response;
 import static com.j.m2.montano.cursoandroidfinal.R.string.location;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener{
+        GoogleMap.OnMarkerClickListener {
 
     GoogleMap googleMap;
     double punto_mapa_latitud;
@@ -52,7 +53,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     Lugar lugar;
 
     public void setLugar(Lugar lugar) {
-        this.lugar=lugar;
+        this.lugar = lugar;
         punto = lugar.getPunto_mapa();
         String[] parts = punto.split(", ");
         String part1 = parts[0]; // 123
@@ -89,34 +90,32 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             return;
         }
         googleMap.setMyLocationEnabled(true);
-        googleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
 
-            public void onMyLocationChange(Location pos) {
-                // TODO Auto-generated method stub
-
-                // Extraigo la Lat y Lon del Listener
-
-
-                posActLat = pos.getLatitude();
-                posActLon = pos.getLongitude();
-               posAct = new LatLng(posActLat, posActLon);
-                //LatLng latLng = new LatLng(posActLat, posActLon);
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(posAct, 14);
-                googleMap.animateCamera(cameraUpdate);
-
-
-            }
-        });
-        if(estado){
+        if (estado) {
             mostrarTodos();
-            //Location loc=new Location("location");
-            //posAct = new LatLng(loc.getLatitude(),loc.getLongitude());
+            googleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+
+                public void onMyLocationChange(Location pos) {
+                    // TODO Auto-generated method stub
+
+                    // Extraigo la Lat y Lon del Listener
+
+
+                    posActLat = pos.getLatitude();
+                    posActLon = pos.getLongitude();
+                    posAct = new LatLng(posActLat, posActLon);
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(posAct, 14);
+                    googleMap.animateCamera(cameraUpdate);
+
+
+                }
+            });
             LatLng latLng = new LatLng(posActLat, posActLon);
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
             googleMap.animateCamera(cameraUpdate);
 
 
-        }else {
+        } else {
 
             // Add a marker in Sydney and move the camera
             LatLng punto_mapa = new LatLng(punto_mapa_latitud, punto_mapa_longitud);
@@ -124,14 +123,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(punto_mapa, 19));
         }
     }
-    private void mostrarTodos(){
+
+    private void mostrarTodos() {
         Call<ResponsModel> call = RetroServe.getRetrofitUser().getListLugar();
         call.enqueue(new Callback<ResponsModel>() {
             @Override
             public void onResponse(Call<ResponsModel> call, Response<ResponsModel> response) {
                 lugars = response.body().getResult();
                 googleMap.clear();
-                for (int i=0;i<lugars.size();i++) {
+                for (int i = 0; i < lugars.size(); i++) {
                     LatLng local1 = convertir(lugars.get(i).getPunto_mapa());
                     marker_edith = googleMap.addMarker(new MarkerOptions().position(local1).title(lugars.get(i).getNombre_lugar()));
 
@@ -147,10 +147,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
         });
     }
-    private LatLng convertir(String puntoMapa){
-        String aux=puntoMapa.replace(" ","");
+
+    private LatLng convertir(String puntoMapa) {
+        String aux = puntoMapa.replace(" ", "");
         String[] parts = aux.split(",");
-        return new LatLng(Double.parseDouble((parts[0])),Double.parseDouble(parts[1]));
+        return new LatLng(Double.parseDouble((parts[0])), Double.parseDouble(parts[1]));
     }
 
     @Override
