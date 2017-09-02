@@ -21,6 +21,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.j.m2.montano.cursoandroidfinal.Adapters.AdaptadorListContent;
 import com.j.m2.montano.cursoandroidfinal.Model.Lugar;
 import com.j.m2.montano.cursoandroidfinal.Model.ResponsModel;
 import com.j.m2.montano.cursoandroidfinal.R;
@@ -36,7 +41,7 @@ import retrofit2.Response;
 //import static com.j.m2.montano.cursoandroidfinal.R.id.map;
 import static com.j.m2.montano.cursoandroidfinal.R.string.location;
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback,
+public class MapsFragment extends BaseFragment implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener {
 
     GoogleMap googleMap;
@@ -92,7 +97,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         googleMap.setMyLocationEnabled(true);
 
         if (estado) {
-            mostrarTodos();
+            //mostrarTodos();
+            llenarListaLugaresFirebase();
             googleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
 
                 public void onMyLocationChange(Location pos) {
@@ -145,6 +151,37 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
             }
 
+        });
+    }
+
+    public void llenarListaLugaresFirebase() {
+        DatabaseReference lugares = database.getReference("Lugares");
+        lugares.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                lugars.clear();
+                Iterable<DataSnapshot> dataSnapshots = dataSnapshot.getChildren();
+                for (DataSnapshot dataSnapshot1 : dataSnapshots) {
+                    Lugar cajero = dataSnapshot1.getValue(Lugar.class);
+                    lugars.add(cajero);
+
+                    //mAllValues.add(cajero.getNome());
+                }
+                for (int i = 0; i < lugars.size(); i++) {
+                    LatLng local1 = convertir(lugars.get(i).getPunto_mapa());
+                    marker_edith = googleMap.addMarker(new MarkerOptions().position(local1).title(lugars.get(i).getNombre_lugar()));
+
+                }
+                closeLoadingDialog();
+                //actualizar();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                closeLoadingDialog();
+                showAlertDialog(getActivity(),"parece que no tienes coneccion a internet",
+                        "Verifique si tiene coneccion a internet", false);
+            }
         });
     }
 

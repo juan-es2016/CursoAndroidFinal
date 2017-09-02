@@ -42,5 +42,7 @@
     <string name="card_lugar">card_lugar</string>
     <string name="favorite_imagen">favorite_imagen</string>
     <string name="share_imagen">share_imagen</string>
+    <string name="loading">Cargando ..</string>
+    <string name="default_error">error</string>
 
 </resources>

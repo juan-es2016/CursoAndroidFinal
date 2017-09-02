@@ -16,11 +16,6 @@
 
 package com.j.m2.montano.cursoandroidfinal.Fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,10 +24,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.j.m2.montano.cursoandroidfinal.Activitys.DetailActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.j.m2.montano.cursoandroidfinal.Adapters.AdaptadorListContent;
 import com.j.m2.montano.cursoandroidfinal.Model.Lugar;
 import com.j.m2.montano.cursoandroidfinal.Model.ResponsModel;
@@ -49,17 +46,20 @@ import retrofit2.Response;
 /**
  * Provides UI for the view with List.
  */
-public class ListContentFragment extends Fragment {
+public class ListContentFragment extends BaseFragment {
 
     private List<Lugar> lugars = new ArrayList<>();
     RecyclerView recyclerView;
+    //FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        llenarListaLugares();
+        showLoadingDialog();
+        //llenarListaLugaresRetrofit();
+        llenarListaLugaresFirebase();
 
         return recyclerView;
     }
@@ -68,7 +68,7 @@ public class ListContentFragment extends Fragment {
         return lugars;
     }
 
-    public void llenarListaLugares() {
+    public void llenarListaLugaresRetrofit() {
         //JsonPlaceService api= RetroServe.getClient().create(JsonPlaceService.class);
         Call<ResponsModel> call = RetroServe.getRetrofitUser().getListLugar();
         call.enqueue(new Callback<ResponsModel>() {
@@ -89,5 +89,34 @@ public class ListContentFragment extends Fragment {
 
         });
 
+    }
+    public void llenarListaLugaresFirebase() {
+        DatabaseReference lugares = database.getReference("Lugares");
+        lugares.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                lugars.clear();
+                Iterable<DataSnapshot> dataSnapshots = dataSnapshot.getChildren();
+                for (DataSnapshot dataSnapshot1 : dataSnapshots) {
+                    Lugar cajero = dataSnapshot1.getValue(Lugar.class);
+                    lugars.add(cajero);
+
+                    //mAllValues.add(cajero.getNome());
+                }
+                AdaptadorListContent adapter = new AdaptadorListContent(recyclerView.getContext(), lugars);
+                recyclerView.setAdapter(adapter);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                closeLoadingDialog();
+                //actualizar();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                closeLoadingDialog();
+                showAlertDialog(getActivity(),"parece que no tienes coneccion a internet",
+                        "Verifique si tiene coneccion a internet", false);
+            }
+        });
     }
 }

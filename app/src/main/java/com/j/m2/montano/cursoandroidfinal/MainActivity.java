@@ -1,9 +1,17 @@
 package com.j.m2.montano.cursoandroidfinal;
 
+import android.*;
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -15,7 +23,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.j.m2.montano.cursoandroidfinal.Activitys.BaseActivity;
 import com.j.m2.montano.cursoandroidfinal.Adapters.AdapterFragmentLista;
 import com.j.m2.montano.cursoandroidfinal.Fragments.CardContentFragment;
 import com.j.m2.montano.cursoandroidfinal.Fragments.ListContentFragment;
@@ -26,7 +39,7 @@ import com.j.m2.montano.cursoandroidfinal.Fragments.bienvenidaFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -40,10 +53,11 @@ public class MainActivity extends AppCompatActivity
     NavigationView navView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
+    LocationManager mlocManager;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -52,6 +66,15 @@ public class MainActivity extends AppCompatActivity
         //tabs.setupWithViewPager(viewpager);
         bienvenidaFragment bienvenidaFragment= new bienvenidaFragment();
         setFragment(0);
+        //FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
+        mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            return;
+        } else {
+            locationStart();
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +82,10 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("message");
+
+                myRef.setValue("Hello, World!");
             }
         });
 
@@ -68,24 +95,6 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navView.setNavigationItemSelectedListener(this);
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-        AdapterFragmentLista adapter = new AdapterFragmentLista(getSupportFragmentManager());
-        adapter.addFragment(new bienvenidaFragment(), "BIENVENIDO");
-        //adapter.addFragment(new ListContentFragment(), "Lugares mas visitados");
-        //adapter.addFragment(new MapsFragment(), "Tile");
-        //adapter.addFragment(new CardContentFragment(), "Card");
-        viewPager.setAdapter(adapter);
-    }
-
-    private void setupViewPager2(ViewPager viewPager) {
-        AdapterFragmentLista adapter = new AdapterFragmentLista(getSupportFragmentManager());
-        //adapter.addFragment(new bienvenidaFragment(), "BIENVENIDO");
-        adapter.addFragment(new ListContentFragment(), "Lugares mas visitados");
-        //adapter.addFragment(new MapsFragment(), "Tile");
-        adapter.addFragment(new CardContentFragment(), "Card");
-        viewPager.setAdapter(adapter);
     }
 
     @Override
@@ -129,10 +138,21 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
         setFragment(0);
         } else if (id == R.id.nav_lista) {
-          setFragment(1);
+            if (isOnline()) {
+
+                setFragment(1);
+            }else {
+                mostrarError();
+                setFragment(0);
+            }
 
         } else if (id == R.id.nav_mapa) {
-            setFragment(2);
+            if (isOnline()) {
+                setFragment(2);
+            }else {
+                mostrarError();
+                setFragment(0);
+            }
 
         } else if (id == R.id.nav_manage) {
 
@@ -172,5 +192,28 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.commit();
                 break;
         }
+    }
+
+    private void locationStart() {
+
+        final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled) {
+            Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivityForResult(settingsIntent, 1);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (!mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                Toast.makeText(this, "para contuar, active el gps de su dispositivo", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+    public void mostrarError() {
+        showAlertDialog(this, "parece que no tienes coneccion a internet",
+                "Verifique si tiene coneccion a internet", false);
     }
 }

@@ -1,30 +1,26 @@
 package com.j.m2.montano.cursoandroidfinal.Model;
 
+import com.google.firebase.database.Exclude;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Juan on 8/11/2017.
  */
 
 public class Lugar {
-    @SerializedName("id_lugar")
+    //@SerializedName("id_lugar")
     private String id_lugar;
-    @SerializedName("nombre_lugar")
+    //@SerializedName("nombre_lugar")
     private String nombre_lugar;
-    @SerializedName("breve_descripcion")
+    //@SerializedName("breve_descripcion")
     private String breve_descripcion;
-    @SerializedName("descripcion")
+    //@SerializedName("descripcion")
     private String descripcion;
-    @SerializedName("punto_mapa")
+    //@SerializedName("punto_mapa")
     private String punto_mapa;
-
-    public Lugar(String id_lugar, String nombre_lugar, String breve_descripcion, String descripcion, String punto_mapa) {
-        this.id_lugar = id_lugar;
-        this.nombre_lugar = nombre_lugar;
-        this.breve_descripcion = breve_descripcion;
-        this.descripcion = descripcion;
-        this.punto_mapa = punto_mapa;
-    }
 
     public String getId_lugar() {
         return id_lugar;
@@ -64,5 +60,17 @@ public class Lugar {
 
     public void setPunto_mapa(String punto_mapa) {
         this.punto_mapa = punto_mapa;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id_lugar", id_lugar);
+        result.put("nombre_lugar", nombre_lugar);
+        result.put("breve_descripcion", breve_descripcion);
+        result.put("descripcion", descripcion);
+        result.put("punto_mapa",punto_mapa);
+
+        return result;
     }
 }

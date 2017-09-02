@@ -22,11 +22,18 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.j.m2.montano.cursoandroidfinal.Adapters.AdaptadorListContent;
 import com.j.m2.montano.cursoandroidfinal.Fragments.MapsFragment;
 import com.j.m2.montano.cursoandroidfinal.Model.Lugar;
 import com.j.m2.montano.cursoandroidfinal.Model.ResponsModel;
@@ -42,9 +49,14 @@ import retrofit2.Response;
 /**
  * Provides UI for the Detail page with Collapsing Toolbar.
  */
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends BaseActivity {
 
     public static final String EXTRA_POSITION = "position";
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+   ArrayList<Lugar> lugars=new ArrayList<>();
+    CollapsingToolbarLayout collapsingToolbar;
+    int postion;
+    Resources resources;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,15 +65,16 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Set Collapsing Toolbar layout to the screen
-        final CollapsingToolbarLayout collapsingToolbar =
+        collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         // Set title of Detail page
         // collapsingToolbar.setTitle(getString(R.string.item_title));
-        final int postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
-        final Resources resources = getResources();
+        postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
+        resources = getResources();
 
-        final ArrayList<Lugar>[] lugars = new ArrayList[]{new ArrayList<>()};
-        Call<ResponsModel> call = RetroServe.getRetrofitUser().getListLugar();
+       // final ArrayList<Lugar>[] lugars = new ArrayList[]{new ArrayList<>()};
+       llenarListaLugaresFirebase();
+        /*Call<ResponsModel> call = RetroServe.getRetrofitUser().getListLugar();
         call.enqueue(new Callback<ResponsModel>() {
             @Override
             public void onResponse(Call<ResponsModel> call, Response<ResponsModel> response) {
@@ -96,11 +109,55 @@ public class DetailActivity extends AppCompatActivity {
 
             }
 
-        });
+        });*/
 
 
 
         //String[] places = resources.getStringArray(R.array.places);
 
+    }
+    public void llenarListaLugaresFirebase() {
+        DatabaseReference lugares = database.getReference("Lugares");
+        lugares.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                lugars.clear();
+                Iterable<DataSnapshot> dataSnapshots = dataSnapshot.getChildren();
+                for (DataSnapshot dataSnapshot1 : dataSnapshots) {
+                    Lugar lugar = dataSnapshot1.getValue(Lugar.class);
+                    lugars.add(lugar);
+
+                    //mAllValues.add(cajero.getNome());
+                }
+                collapsingToolbar.setTitle(lugars.get(postion).getNombre_lugar());
+
+                //String[] placeDetails = resources.getStringArray(R.array.place_details);
+                TextView placeDetail = (TextView) findViewById(R.id.place_detail);
+                placeDetail.setText(lugars.get(postion).getDescripcion());
+
+                String[] placeLocations = resources.getStringArray(R.array.place_locations);
+                TextView placeLocation =  (TextView) findViewById(R.id.place_location);
+                placeLocation.setText(placeLocations[postion % placeLocations.length]);
+
+                TypedArray placePictures = resources.obtainTypedArray(R.array.place_avator);
+                ImageView placePicutre = (ImageView) findViewById(R.id.image);
+                placePicutre.setImageDrawable(placePictures.getDrawable(postion % placePictures.length()));
+
+                placePictures.recycle();
+
+                //String[] punto_map=resources.getStringArray(R.array.punto_mapa);
+                MapsFragment mapsFragment=new MapsFragment();
+                mapsFragment.setLugar(lugars.get(postion));
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragmentMap, mapsFragment);
+                fragmentTransaction.commit();
+                //actualizar();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                closeLoadingDialog();
+            }
+        });
     }
 }
